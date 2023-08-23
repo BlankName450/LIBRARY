@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="LibMSModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Book">
+    <Key>
+      <PropertyRef Name="ISBN" />
+    </Key>
+    <Property Name="ISBN" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Category" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Quantity" Type="Int32" />
+    <Property Name="Author" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="LoanBooks" Relationship="Self.FK_LoanBook_ToTable" FromRole="Books" ToRole="LoanBook" />
+  </EntityType>
+  <EntityType Name="Category">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="LibMSAdmin">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="LibUser">
+    <Key>
+      <PropertyRef Name="StudentId" />
+    </Key>
+    <Property Name="StudentId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="LoanBooks" Relationship="Self.FK_LoanBook_ToTable_1" FromRole="LibUsers" ToRole="LoanBook" />
+  </EntityType>
+  <EntityType Name="LoanBook">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="ISBN" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="StudentId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="LoanReturn" Type="Boolean" />
+    <Property Name="StudentName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Book" Relationship="Self.FK_LoanBook_ToTable" FromRole="LoanBook" ToRole="Books" />
+    <NavigationProperty Name="LibUser" Relationship="Self.FK_LoanBook_ToTable_1" FromRole="LoanBook" ToRole="LibUsers" />
+  </EntityType>
+  <Association Name="FK_LoanBook_ToTable">
+    <End Role="Books" Type="Self.Book" Multiplicity="1" />
+    <End Role="LoanBook" Type="Self.LoanBook" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Books">
+        <PropertyRef Name="ISBN" />
+      </Principal>
+      <Dependent Role="LoanBook">
+        <PropertyRef Name="ISBN" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_LoanBook_ToTable_1">
+    <End Role="LibUsers" Type="Self.LibUser" Multiplicity="1" />
+    <End Role="LoanBook" Type="Self.LoanBook" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="LibUsers">
+        <PropertyRef Name="StudentId" />
+      </Principal>
+      <Dependent Role="LoanBook">
+        <PropertyRef Name="StudentId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="LibMSEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Books" EntityType="Self.Book" />
+    <EntitySet Name="Categories" EntityType="Self.Category" />
+    <EntitySet Name="LibMSAdmins" EntityType="Self.LibMSAdmin" />
+    <EntitySet Name="LibUsers" EntityType="Self.LibUser" />
+    <EntitySet Name="LoanBooks" EntityType="Self.LoanBook" />
+    <AssociationSet Name="FK_LoanBook_ToTable" Association="Self.FK_LoanBook_ToTable">
+      <End Role="Books" EntitySet="Books" />
+      <End Role="LoanBook" EntitySet="LoanBooks" />
+    </AssociationSet>
+    <AssociationSet Name="FK_LoanBook_ToTable_1" Association="Self.FK_LoanBook_ToTable_1">
+      <End Role="LibUsers" EntitySet="LibUsers" />
+      <End Role="LoanBook" EntitySet="LoanBooks" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
